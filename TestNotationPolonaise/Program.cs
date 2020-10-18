@@ -27,17 +27,70 @@ namespace TestNotationPolonaise
             } while (reponse != carac1 && reponse != carac2);
             return reponse;
         }
-        static float polonaise(String laFormule)
+        /// <summary>
+        ///  Retourner la réponse à une formule Polonaise
+        /// </summary>
+        /// <param name="laFormule">Formule Polonaise à calculer</param> 
+        /// <returns></returns>
+        static float Polonaise(String laFormule)
         {
             try
             {
-                string[] t = laFormule.Split(' ');
-                for (int k = t.Length - 1 ; k >= 0; k--)
-                {
-                    t[k] = t[k].ToString();
-                    if(t[k] == "+" || t[k] = '-' || t[k] = '*' || t[k] = '/')
+                // Attribuer caractères formule dans les cases du tableau tab
+                string[] tab = laFormule.Split(' ');
+                int nbCases = tab.Length;
 
+                // chercher signer d'operation
+                while(nbCases > 1)
+                {
+                    int k = nbCases - 1;
+                    while (k > 0 && tab[k] != "+" && tab[k] != "-" && tab[k] != "*" && tab[k] != "/")
+                    {
+                        k--;
+                    }
+                    // Récuperer valeurs des deux cases précédents l'opérateur
+                    float a = float.Parse(tab[k + 1]);
+                    float b = float.Parse(tab[k + 2]);
+
+                    //faire le calcul
+                    float result = 0;
+                    switch(tab[k])
+                    {
+                        case "+":
+                            result = a + b;
+                            break;
+                        case "-":
+                            result = a - b;
+                            break;
+                        case "*":
+                            result = a * b;
+                            break;
+                        case "/":
+                            if (b == 0)
+                            {
+                                return float.NaN;
+                            }
+                            result = a / b;
+                            break;
+                    }
+
+                    // Ranger resultat dans tableau
+                    tab[k] = result.ToString();
+
+                    // Décaler valeurs restants dans tableau
+                    for (int j = k+1; j < nbCases -2; j++)
+                    {
+                        tab[j] = tab[j + 2];
+                    }
+
+                    // Effacer valeurs des dernières cases
+                    for (int j = nbCases -2; j < nbCases; j++)
+                    {
+                        tab[j] = " ";
+                    }
+                    nbCases -= 2;
                 }
+                return float.Parse(tab[0]);
             }
             catch
             {
